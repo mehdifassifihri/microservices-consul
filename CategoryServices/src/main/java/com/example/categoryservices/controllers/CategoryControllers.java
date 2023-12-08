@@ -27,12 +27,6 @@ public class CategoryControllers {
         return categoryServices.getCategoryById(id);
     }
 
-    @GetMapping("/cw/aq")
-    String getTest(){
-        return "Mehdi";
-    }
-    @GetMapping("/hello")
-    public String sayHello() {
-        return "Hello World";
-    }
+
+
 }

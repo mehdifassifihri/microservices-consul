@@ -18,6 +18,9 @@ public class Product {
     private double price;
 
     private int cat_Id;
-    @ManyToOne(cascade=CascadeType.ALL)
-    private Category category;
+
+
+
+
+
 }

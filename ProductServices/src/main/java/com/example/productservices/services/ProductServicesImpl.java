@@ -1,13 +1,15 @@
 package com.example.productservices.services;
 
-import com.example.productservices.entities.Category;
+import com.example.productservices.dto.CategoryDTO;
 import com.example.productservices.entities.Product;
 import com.example.productservices.external.CategoryService;
+import com.example.productservices.models.ProductResponse;
 import com.example.productservices.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,17 +22,32 @@ public class ProductServicesImpl implements ProductServices{
 
 
     @Override
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<ProductResponse>> getProducts() {
         List<Product> products = productRepository.findAll();
+        List<ProductResponse> productResponses = new ArrayList<>();
+
         for (Product product : products) {
-            Optional<Category> optionalCategory = categoryService.getCategoryById(product.getCat_Id());
-            if (!optionalCategory.isPresent()) {
-                return ResponseEntity.notFound().build();
-            }
-            product.setCategory(optionalCategory.get());
-            productRepository.save(product);
+            // Creating a new ProductResponse object
+            ProductResponse productResponse = new ProductResponse();
+
+            // Copying common properties
+            productResponse.setId(product.getId());
+            productResponse.setName(product.getName());
+            productResponse.setPrice(product.getPrice());
+
+            // Fetching category details
+            Optional<CategoryDTO> categoryResponse = categoryService.getCategoryById(product.getCat_Id());
+
+
+            // Creating and setting CategoryDetails
+            CategoryDTO categoryDto = categoryResponse.get();
+            ProductResponse.CategoryDetails categoryDetails = new ProductResponse.CategoryDetails(categoryDto.getId(), categoryDto.getName());
+            productResponse.setCategoryDetails(categoryDetails);
+
+            productResponses.add(productResponse);
         }
-        return ResponseEntity.ok(products);
+
+        return ResponseEntity.ok(productResponses);
     }
 
 
