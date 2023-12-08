@@ -8,6 +8,7 @@ import com.example.productservices.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class ProductServicesImpl implements ProductServices{
     ProductRepository productRepository;
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    RestTemplate restTemplate;
 
 
     @Override
@@ -35,13 +38,11 @@ public class ProductServicesImpl implements ProductServices{
             productResponse.setName(product.getName());
             productResponse.setPrice(product.getPrice());
 
+            CategoryDTO test = restTemplate.getForObject("http://CATEGORY-SERVICES/category/"+product.getCat_Id(), CategoryDTO.class);
+
             // Fetching category details
-            Optional<CategoryDTO> categoryResponse = categoryService.getCategoryById(product.getCat_Id());
 
-
-            // Creating and setting CategoryDetails
-            CategoryDTO categoryDto = categoryResponse.get();
-            ProductResponse.CategoryDetails categoryDetails = new ProductResponse.CategoryDetails(categoryDto.getId(), categoryDto.getName());
+            ProductResponse.CategoryDetails categoryDetails = new ProductResponse.CategoryDetails(test.getId(), test.getName());
             productResponse.setCategoryDetails(categoryDetails);
 
             productResponses.add(productResponse);
