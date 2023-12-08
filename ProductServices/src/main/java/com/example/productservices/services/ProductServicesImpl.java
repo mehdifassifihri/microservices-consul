@@ -30,17 +30,16 @@ public class ProductServicesImpl implements ProductServices{
         List<ProductResponse> productResponses = new ArrayList<>();
 
         for (Product product : products) {
-            // Creating a new ProductResponse object
+
             ProductResponse productResponse = new ProductResponse();
 
-            // Copying common properties
+
             productResponse.setId(product.getId());
             productResponse.setName(product.getName());
             productResponse.setPrice(product.getPrice());
 
             CategoryDTO test = restTemplate.getForObject("http://CATEGORY-SERVICES/category/"+product.getCat_Id(), CategoryDTO.class);
 
-            // Fetching category details
 
             ProductResponse.CategoryDetails categoryDetails = new ProductResponse.CategoryDetails(test.getId(), test.getName());
             productResponse.setCategoryDetails(categoryDetails);

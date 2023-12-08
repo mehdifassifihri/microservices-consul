@@ -15,7 +15,8 @@ public class CategoryServicesImpl implements CategoryServices{
     CategoryRepository categoryRepository;
     @Override
     public ResponseEntity<List<Category>> getCategories() {
-        return (ResponseEntity<List<Category>>) categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        return ResponseEntity.ok(categories);
     }
 
     @Override
