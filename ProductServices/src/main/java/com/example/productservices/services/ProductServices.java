@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface ProductServices {
     ResponseEntity<List<ProductResponse>> getProducts();
+
+    ResponseEntity<List<ProductResponse>> getProductsWithFeign();
     Product addProduct(Product product);
 }

@@ -19,8 +19,4 @@ public class Product {
 
     private int cat_Id;
 
-
-
-
-
 }

@@ -17,10 +17,16 @@ public class ProductControllers {
     ProductServicesImpl productServices;
     @Autowired
     CategoryService categoryService;
-    @GetMapping()
+    @GetMapping("/rest")
     ResponseEntity<List<ProductResponse>> getProducts(){
         return productServices.getProducts();
     }
+
+    @GetMapping("/feign")
+    ResponseEntity<List<ProductResponse>> getProductsWithFeign(){
+        return productServices.getProductsWithFeign();
+    }
+
     @PostMapping()
     Product addProduct(@RequestBody Product product){
         return productServices.addProduct(product);

@@ -30,18 +30,41 @@ public class ProductServicesImpl implements ProductServices{
         List<ProductResponse> productResponses = new ArrayList<>();
 
         for (Product product : products) {
-
             ProductResponse productResponse = new ProductResponse();
-
-
             productResponse.setId(product.getId());
             productResponse.setName(product.getName());
             productResponse.setPrice(product.getPrice());
 
             CategoryDTO test = restTemplate.getForObject("http://CATEGORY-SERVICES/category/"+product.getCat_Id(), CategoryDTO.class);
 
-
             ProductResponse.CategoryDetails categoryDetails = new ProductResponse.CategoryDetails(test.getId(), test.getName());
+            productResponse.setCategoryDetails(categoryDetails);
+            productResponses.add(productResponse);
+        }
+        return ResponseEntity.ok(productResponses);
+    }
+
+    @Override
+    public ResponseEntity<List<ProductResponse>> getProductsWithFeign() {
+        List<Product> products = productRepository.findAll();
+        List<ProductResponse> productResponses = new ArrayList<>();
+
+        for (Product product : products) {
+            // Creating a new ProductResponse object
+            ProductResponse productResponse = new ProductResponse();
+
+            // Copying common properties
+            productResponse.setId(product.getId());
+            productResponse.setName(product.getName());
+            productResponse.setPrice(product.getPrice());
+
+            // Fetching category details
+            Optional<CategoryDTO> categoryResponse = categoryService.getCategoryById(product.getCat_Id());
+
+
+            // Creating and setting CategoryDetails
+            CategoryDTO categoryDto = categoryResponse.get();
+            ProductResponse.CategoryDetails categoryDetails = new ProductResponse.CategoryDetails(categoryDto.getId(), categoryDto.getName());
             productResponse.setCategoryDetails(categoryDetails);
 
             productResponses.add(productResponse);
@@ -49,6 +72,8 @@ public class ProductServicesImpl implements ProductServices{
 
         return ResponseEntity.ok(productResponses);
     }
+
+
 
 
     @Override
