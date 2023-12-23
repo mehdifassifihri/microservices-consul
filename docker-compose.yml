@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:git
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+
+  serviceregistry:
+    build: ./ServiceRegistry
+    container_name: serviceregistry
+    ports:
+      - "8761:8761"
+
+  cloudgateway:
+    build: ./CloudGateway
+    container_name: cloudgateway
+    ports:
+      - "9091:9091"
+    environment:
+      EUREKA_SERVER-ADDRESS: http://serviceregistry:8761/eureka
+    depends_on:
+      - serviceregistry
+
+  categoryservices:
+    build: ./CategoryServices
+    container_name: categoryservices
+    ports:
+      - "8082:8082"
+    environment:
+      EUREKA_SERVER-ADDRESS: http://serviceregistry:8761/eureka
+      DB_HOST: mysql
+      SPRING_DATASOURCE_PASSWORD : root
+    depends_on:
+      - serviceregistry
+      - mysql
+
+  productservices:
+    build: ./ProductServices
+    container_name: productservices
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_SERVER-ADDRESS: http://serviceregistry:8761/eureka
+      DB_HOST: mysql
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - serviceregistry
+      - mysql
+
+
+
